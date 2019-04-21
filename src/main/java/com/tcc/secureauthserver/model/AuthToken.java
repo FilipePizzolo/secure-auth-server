@@ -1,8 +1,13 @@
-package com.tcc.secureauthserver.dto;
+package com.tcc.secureauthserver.model;
 
-public class TokenDto {
+public class AuthToken {
+
 	private String token;
-	
+
+	public AuthToken(String token) {
+		this.token = token;
+	}
+
 	public String getToken() {
 		return token;
 	}
@@ -10,4 +15,5 @@ public class TokenDto {
 	public void setToken(String token) {
 		this.token = token;
 	}
+
 }

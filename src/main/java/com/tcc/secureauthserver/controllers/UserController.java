@@ -1,24 +1,34 @@
 package com.tcc.secureauthserver.controllers;
 
-import java.security.Principal;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import com.tcc.secureauthserver.model.User;
+import com.tcc.secureauthserver.dto.UserDto;
+import com.tcc.secureauthserver.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
 
 @RestController
-@EnableResourceServer
 public class UserController {
 
-	@RequestMapping("/user")
-	public Map<String, Object> user(Principal user) {
-		Map<String, Object> map = new LinkedHashMap<>();
-		map.put("name", user.getName());
-		map.put("roles", AuthorityUtils.authorityListToSet(((Authentication) user).getAuthorities()));
-		return map;
+	@Autowired
+	private UserService userService;
+
+	@PreAuthorize("hasRole('ADMIN')")
+	@RequestMapping(value = "/users", method = RequestMethod.GET)
+	public List<User> listUser() {
+		return userService.findAll();
+	}
+
+	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+	@RequestMapping(value = "/users/{id}", method = RequestMethod.GET)
+	public User getOne(@PathVariable(value = "id") Long id) {
+		return userService.findById(id);
+	}
+
+	@RequestMapping(value = "/signup", method = RequestMethod.POST)
+	public User saveUser(@RequestBody UserDto user) {
+		return userService.save(user);
 	}
 }

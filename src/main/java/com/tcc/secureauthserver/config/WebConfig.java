@@ -1,4 +1,4 @@
-package com.tcc.secureauthserver;
+package com.tcc.secureauthserver.config;
 
 import java.io.IOException;
 
